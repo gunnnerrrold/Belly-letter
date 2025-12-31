@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Belly and Jegy 2025</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas id="fireworks"></canvas>
+
+    <div class="container">
+      <div class="book" id="book">
+        <div class="cover">
+          <h1 class="book-title">Belly and Jegy 2025</h1>
+          <div class="book-image">
+            <img
+              src="images/bellycover.jpg"
+              alt="Book Cover"
+              class="cover-img"
+              id="coverImage"
+            />
+            <video
+              src="images/vid1.mp4"
+              class="cover-video"
+              id="coverVideo"
+              loop
+              muted
+              preload="auto"
+            ></video>
+          </div>
+        </div>
+        <div class="page left">
+          <div class="page-content">
+            <h2 class="month-title">Our Memories</h2>
+            <div class="collage-container">
+              <div class="photo-placeholder tilt-left">Photo 1</div>
+              <div class="photo-placeholder tilt-right">Photo 2</div>
+              <div class="photo-placeholder">Photo 3</div>
+              <div class="photo-placeholder tilt-left">Photo 4</div>
+              <div class="photo-placeholder tilt-right">Photo 5</div>
+              <div class="photo-placeholder">Photo 6</div>
+            </div>
+            <div class="page-nav">
+              <button class="nav-btn" id="prevBtn" disabled>Previous</button>
+              <span class="page-number">1 / 3</span>
+              <button class="nav-btn" id="nextBtn">Next</button>
+            </div>
+          </div>
+        </div>
+        <div class="page right"></div>
+      </div>
+      <button class="btn" id="readBtn">Read</button>
+    </div>
+
+    <script>
+      const book = document.getElementById("book");
+      const btn = document.getElementById("readBtn");
+      const coverImage = document.getElementById("coverImage");
+      const coverVideo = document.getElementById("coverVideo");
+      const bookImageContainer = document.querySelector(".book-image");
+
+      // Unlock audio on first user interaction
+      let audioUnlocked = false;
+
+      const unlockAudio = async () => {
+        if (!audioUnlocked) {
+          try {
+            coverVideo.muted = false;
+            await coverVideo.play();
+            coverVideo.pause();
+            coverVideo.currentTime = 0;
+            coverVideo.muted = true;
+            audioUnlocked = true;
+          } catch (err) {
+            console.log("Audio unlock error:", err);
+          }
+        }
+      };
+
+      // Unlock on any click on the page
+      document.body.addEventListener("click", unlockAudio, { once: true });
+
+      // Hover effect for cover image/video
+      bookImageContainer.addEventListener("mouseenter", async () => {
+        coverImage.style.opacity = "0";
+        coverVideo.style.opacity = "1";
+        coverVideo.currentTime = 0;
+        coverVideo.muted = false;
+
+        try {
+          await coverVideo.play();
+        } catch (err) {
+          console.log("Play error:", err);
+        }
+      });
+
+      bookImageContainer.addEventListener("mouseleave", () => {
+        coverImage.style.opacity = "1";
+        coverVideo.style.opacity = "0";
+        coverVideo.pause();
+        coverVideo.currentTime = 0;
+        coverVideo.muted = true;
+      });
+
+      btn.addEventListener("click", () => {
+        book.classList.toggle("open");
+        btn.textContent = book.classList.contains("open") ? "Close" : "Read";
+
+        if (book.classList.contains("open")) {
+          currentPage = 0;
+          updatePage();
+        }
+      });
+
+      const pages = [
+        {
+          title: "Our Memories",
+          type: "collage",
+          content: `
+                    <div class="collage-container">
+                        <div class="photo-placeholder tilt-right" style="grid-column: 1; grid-row: 1;">
+                            <img src="images/pic1.jpg" alt="Memory 1">
+                        </div>
+                        <div class="photo-placeholder tilt-left" style="grid-column: 2 / 4; grid-row: 1 / 3;">
+                            <img src="images/pic2.jpg" alt="Memory 2">
+                        </div>
+                        <div class="photo-placeholder" style="grid-column: 1; grid-row: 2 / 4; transform: rotate(-5deg);">
+                            <img src="images/pic3.jpg" alt="Memory 3">
+                        </div>
+                    </div>
+                `,
+        },
+        {
+          title: "Tough Journey",
+          type: "message",
+          text: `Dear love love,
+
+love love first of all i wanna say i love you, we've been through a lot this year and you know that too.
+in the past few months mahirap yung mga dinanas natin physically and lalo mentally, ang daming problems, family problems, financial problemts etc...`,
+        },
+        {
+          title: "Tough Journey",
+          type: "message",
+          text: `Kahit na may times hirap tayo naapektuhan na pati relation ship natin natatawid naman natin so far.
+
+                Also i wanna say sorry love sa mga away na nangyare satin dahil sa mga pag kukulang ko.
+                Alam ko both tayo nag aadjust nag sasacrfice but i want you to know i will never leave you kahit gano pa kahirap yung danasin natin. 
+                I know sa mga susunod na year madami pa tayong dadanasin and i will stay palagi sayo im here kakampe mo ko palagi.`,
+        },
+        {
+          title: "Why I'm Thankful",
+          type: "message",
+          text: `Thank you love alam mo super laking help mo sakin, baka di mo man napapansin yun pero super thankfull ako sayo.
+
+                Salamat palagi love sa pag comfort and pag papakalma sakin lalo na sa mga times na nag bebreakdown ako, im sorry you have to deal with that. Di ko alam kung ano gagawin ko if wala ka sa mga times na yun baka kung san na ako napunta or gumawa na ako ng mga bagay na pag sisihan ko. Im super thankful sa asawa ko for me ikaw yung pinaka importanteng part ng buhay ko.`,
+        },
+        {
+          title: "As 2025 Ends",
+          type: "message",
+          text: `HAPPY NEW YEAR ASAWAA!!!!!
+
+                Ilove youu asaw kooo im super happy na ikaw lagi kasama ko every year, i really hope na mag kasama na tayo next year and magawa natin yung ibang bagay na usto natin kahit na di lahat atleast yung iba magawa natin.
+                that's one of my wish this new year and sana matupad sya if hindi naman may next year pa and sana maging soft naman satin yung 2026 dami nating pinag daanan netong 2025 and hope a iwan natin lahat ng away nung 2025.`,
+        },
+        {
+          title: "As 2025 Ends",
+          type: "message",
+          text: `Ilove you ikaw yung besttt na nangyare sakin every year, i wish you the best  as well  kung pwede nga lnggg akin na lng lahat ng hardship mo ako na aako para sa asawa ko it sounds corny or cringe but i really mean it asawa hahah.
+                
+                Super excited ako this 2026 cause i know mas marami ng opportunity for us na magkita kase gagrad na and mag wowork na tayo, i wanna explore my life with youuu. Di ko man nasabi lahat ng usto kong iexpress but i want you to know na love na love kita higit sa kaya kong iexpress.`,
+        },
+        {
+          title: "As 2025 Ends",
+          type: "message",
+          text: `Im so happy sa lahat ng memories na nacrete natin this 2025 and i hope na this 2026 mas maganda pa and mas marami pa yung memories na magawa natin. Love thank you for being you, and for choosing me every single day.
+
+I love you more than everything in this world, Happy new year love love mwahhh.
+
+
+                <span class="signature">-Jeggyyy</span>`,
+        },
+      ];
+
+      let currentPage = 0;
+      const leftPage = document.querySelector(".page.left .page-content");
+      const totalPages = pages.length;
+
+      function updatePage() {
+        const page = pages[currentPage];
+
+        if (page.type === "collage") {
+          leftPage.innerHTML = `
+                    <h2 class="month-title">${page.title}</h2>
+                    ${page.content}
+                    <div class="page-nav">
+                        <button class="nav-btn" id="prevBtn" disabled>Previous</button>
+                        <span class="page-number">1 / ${totalPages}</span>
+                        <button class="nav-btn" id="nextBtn">Next</button>
+                    </div>
+                `;
+        } else {
+          leftPage.innerHTML = `
+                    <h2 class="month-title">${page.title}</h2>
+                    <p class="page-text message-text">${page.text}</p>
+                    <div class="page-nav">
+                        <button class="nav-btn" id="prevBtn" ${
+                          currentPage === 0 ? "disabled" : ""
+                        }>Previous</button>
+                        <span class="page-number">${
+                          currentPage + 1
+                        } / ${totalPages}</span>
+                        <button class="nav-btn" id="nextBtn" ${
+                          currentPage === totalPages - 1 ? "disabled" : ""
+                        }>Next</button>
+                    </div>
+                `;
+        }
+
+        document.getElementById("prevBtn").addEventListener("click", () => {
+          if (currentPage > 0) {
+            currentPage--;
+            updatePage();
+          }
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", () => {
+          if (currentPage < totalPages - 1) {
+            currentPage++;
+            updatePage();
+          }
+        });
+      }
+
+      updatePage();
+
+      // Fireworks Animation
+      const canvas = document.getElementById("fireworks");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      class Particle {
+        constructor(x, y, color) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.velocity = {
+            x: (Math.random() - 0.5) * 10,
+            y: (Math.random() - 0.5) * 10,
+          };
+          this.alpha = 1;
+          this.decay = Math.random() * 0.015 + 0.01;
+          this.size = Math.random() * 3 + 2;
+          this.friction = 0.98;
+        }
+
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = this.alpha;
+
+          const gradient = ctx.createRadialGradient(
+            this.x,
+            this.y,
+            0,
+            this.x,
+            this.y,
+            this.size * 2
+          );
+          gradient.addColorStop(0, this.color);
+          gradient.addColorStop(1, "transparent");
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
+        }
+
+        update() {
+          this.velocity.x *= this.friction;
+          this.velocity.y *= this.friction;
+          this.velocity.y += 0.1;
+          this.x += this.velocity.x;
+          this.y += this.velocity.y;
+          this.alpha -= this.decay;
+          this.size *= 0.99;
+        }
+      }
+
+      class Firework {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = canvas.height;
+          this.targetY = Math.random() * canvas.height * 0.4 + 50;
+          this.particles = [];
+          this.exploded = false;
+          this.hue = Math.random() * 360;
+          this.color = `hsl(${this.hue}, 100%, 60%)`;
+          this.velocity = (canvas.height - this.targetY) / 50;
+        }
+
+        explode() {
+          const particleCount = Math.random() * 50 + 80;
+          for (let i = 0; i < particleCount; i++) {
+            const color = `hsl(${this.hue + Math.random() * 30 - 15}, 100%, ${
+              50 + Math.random() * 20
+            }%)`;
+            this.particles.push(new Particle(this.x, this.y, color));
+          }
+        }
+
+        draw() {
+          if (!this.exploded) {
+            ctx.save();
+            ctx.globalAlpha = 0.6;
+            const gradient = ctx.createRadialGradient(
+              this.x,
+              this.y,
+              0,
+              this.x,
+              this.y,
+              8
+            );
+            gradient.addColorStop(0, this.color);
+            gradient.addColorStop(1, "transparent");
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          } else {
+            this.particles.forEach((particle) => particle.draw());
+          }
+        }
+
+        update() {
+          if (!this.exploded) {
+            this.y -= this.velocity;
+            if (this.y <= this.targetY) {
+              this.exploded = true;
+              this.explode();
+            }
+          } else {
+            this.particles.forEach((particle) => particle.update());
+            this.particles = this.particles.filter((p) => p.alpha > 0);
+          }
+        }
+
+        isDone() {
+          return this.exploded && this.particles.length === 0;
+        }
+      }
+
+      let fireworks = [];
+      let fireworkInterval = 0;
+
+      function animate() {
+        ctx.fillStyle = "rgba(10, 14, 39, 0.15)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        fireworkInterval++;
+        if (fireworkInterval % 25 === 0) {
+          fireworks.push(new Firework());
+        }
+
+        if (Math.random() < 0.05) {
+          fireworks.push(new Firework());
+        }
+
+        fireworks.forEach((firework, index) => {
+          firework.update();
+          firework.draw();
+          if (firework.isDone()) {
+            fireworks.splice(index, 1);
+          }
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
